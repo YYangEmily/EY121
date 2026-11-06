@@ -1,0 +1,37 @@
+---
+title: "mNeonGreen"
+author: "Emily Yang"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(ggplot2)
+library(ggpubr)
+library(DescTools)
+```
+
+```{r}
+
+Height <- c(rep("7mm" , 11) , rep("4.5mm" , 11) , rep("13mm" , 11))
+Laser <- c(rep("479,520" ,33), rep("479,517",33))
+value<- c(1607.25,	1458.25,	114.25,	1140.25,	1128.25,	773.25,	409.25,	848.25,	160.25,	1333.25,	406.25, 603,	455,	20,	-312,	442,	293,	158,	-323,	63,	521,	1097,12831.5,	-356.5,	-186.5,	27154.5,	-2126.5,	-614.5,	-1952.5,	17130.5,	2245.5,	-1151.5,	-1054.5, 284.5,	248.5,	28.5,	195.5,	223.5,	141.5,	89.5,	157.5,	41.5,	250.5,	558.5, 87.75,	80.75,	5.75,	72.75,	85.75,	51.75,	36.75,	52.75,	17.75,	101.75,	82.75,2277,	1057,	-272,	6305,	2651,	2340,	-61,	2896,	101,	1186,	5388)
+
+data <- data.frame(Height,Laser,value)
+
+# Grouped
+ggplot(data, aes(fill=Laser, y=value, x=Height)) + 
+    geom_bar(position="dodge", stat="identity")
+
+#ggsave("Heights.png")
+
+
+ggplot(subset(data, Height == "7mm"), aes(fill=Laser, x = Laser, y = value)) +
+  geom_bar(position="dodge", stat="identity")+
+  geom_point(position = position_jitter(width = 0.2), color = "black")
+#ggsave("7mm.png")
+```

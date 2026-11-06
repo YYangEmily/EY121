@@ -1,0 +1,79 @@
+---
+title: "mScarlet"
+author: "Emily Yang"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(ggplot2)
+library(ggpubr)
+library(DescTools)
+
+df <- read_excel("~/Documents/Experiments/10.30.26 scarlet.xlsx", 
+    sheet = "Percent")
+df1 <- read_excel("~/Documents/Experiments/10.30.26 scarlet.xlsx", 
+    sheet = "Norm")
+
+```
+
+```{r Norm}
+
+dfl <- df %>%  pivot_longer(
+  cols = c(mCherry,mScarlet,SC,SCB),
+  names_to = "Read",
+  values_to = "Values")
+
+my_comparisons <- list( c("mCherry", "mScarlet"), c("SC", "SCB"),c("mScarlet", "SCB"))
+#colors <- c("mCherry" = "red","iLUX" = "cyan", "Fluor baseline"= "maroon", "Lum baseline"="blue")
+  
+  p <- ggplot(dfl, aes(x = Read, y=Values)) +
+geom_bar(stat="summary", 
+           fun=mean,
+           aes(fill=Values)) +
+  geom_point(position = position_jitter(width = 0.2), color = "black")+
+  stat_compare_means(comparisons = my_comparisons)+
+  #geom_signif(comparisons = my_comparisons, map_signif_level=TRUE)+
+  labs(title="Fold above baseline",
+        x ="Wavelength", y = "Fold above baseline", color = "Legend")
+    #scale_color_manual(values = colors)
+p
+
+#ggsave("Scarletfold.png")
+
+    
+    
+```
+
+```{r Percent}
+
+dfl <- df1 %>%  pivot_longer(
+  cols = c(mCherry,mScarlet,SC,SCB),
+  names_to = "Read",
+  values_to = "Values")
+
+my_comparisons <- list( c("mCherry", "mScarlet"), c("SC", "SCB"),c("mScarlet", "SCB"))
+#colors <- c("mCherry" = "red","iLUX" = "cyan", "Fluor baseline"= "maroon", "Lum baseline"="blue")
+  
+  p <- ggplot(dfl, aes(x = Read, y=Values)) +
+geom_bar(stat="summary", 
+           fun=mean,
+           aes(fill=Values)) +
+  geom_point(position = position_jitter(width = 0.2), color = "black")+
+  stat_compare_means(comparisons = my_comparisons)+
+  #geom_signif(comparisons = my_comparisons, map_signif_level=TRUE)+
+  labs(title="mScarlet Norm Lum",
+        x ="Wavelength", y = "Fluorescence (AU)", color = "Legend")
+    #scale_color_manual(values = colors)
+p
+
+#ggsave("scarletFluor.png")
+
+    
+    
+```
