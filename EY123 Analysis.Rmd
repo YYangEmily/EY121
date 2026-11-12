@@ -14,11 +14,13 @@ library(ggplot2)
 library(ggpubr)
 library(DescTools)
 
-df <- read_excel("~/Documents/Experiments/11.4.26 EY123 mScarlet.xlsx", 
-    sheet = "Sheet1")
+
 ```
 
 ```{r }
+df <- read_excel("~/Documents/Experiments/11.4.26 EY123 mScarlet.xlsx", 
+    sheet = "Sheet1")
+
 newdf<- df %>%
   group_by(ID) %>%
   summarize(across(A1:G11, max)) 
@@ -26,15 +28,15 @@ result <- df %>%
   group_by(ID) %>%
   summarise(across(A1:G11,sum))
 
-newdf1<- result %>%
-  slice(seq(from = 1, to = n(), by = 2))
-newdf2 <- result %>%
-  slice(seq(from = 2, to = n(), by = 2)) 
-
-#newdf1<- newdf %>%
+#newdf1<- result %>%
   #slice(seq(from = 1, to = n(), by = 2))
-#newdf2 <- newdf %>%
-  #slice(seq(from = 2, to = n(), by = 2))
+#newdf2 <- result %>%
+  #slice(seq(from = 2, to = n(), by = 2)) 
+
+newdf1<- newdf %>%
+  slice(seq(from = 1, to = n(), by = 2))
+newdf2 <- newdf %>%
+  slice(seq(from = 2, to = n(), by = 2))
 
 min <-c(0,7.5,15,22.5,30,37.5,45,52.5,60,67.5,75,82.5,90,97.5,105,112.5,120,127.5,135,142.5,150,157.5,165,172.5,180,187.5,195,202.5,210,217.5,225,232.5,240,247.5,255,262.5,270,277.5,285,292.5,300,307.5,315,322.5,330,337.5,345,352.5,360,367.5,375,382.5,390,397.5,405,412.5,420,427.5,435,442.5,450,457.5,465,472.5,480,487.5,495,502.5,510,517.5,525,532.5,540,547.5,555,562.5,570,577.5,585,592.5,600,607.5,615,622.5,630,637.5,645,652.5,660,667.5,675,682.5,690,697.5,705,712.5,720,727.5,735,742.5,750,757.5)
 
@@ -115,13 +117,46 @@ p
 
 
 ```
+```{r AUC1}
 
-```{r}
-df <- read_excel("~/Documents/Experiments/11.4.26 EY123 mScarlet Read 2.xlsx", 
-    sheet = "Sheet1")
+
+my_vec <- numeric()
+
+
+
+for (col in j) {
+    a <- AUC(min, col, method = c("trapezoid"))
+    my_vec <- c(my_vec, a)
+}
+
+print(my_vec)
+```
+
+```{r Graph1}
+df <- data.frame(dose=c("Dead","Alive","Alive","Alive","Alive","Control","Alive","Alive","Alive","Dead","Alive","Control","Alive","Alive","Dead","Alive","Alive","Control","Alive","Dead","Alive","Alive","Control"),
+    len=c(11520.00,  11925.00,  15367.50,  20816.25,  21026.25,  22387.50,  14741.25,  31728.75,  27948.75,  36165.00, 12948.75,  10091.25,  15356.25,  24476.25,  17501.25,  14291.25,  11730.00,  13128.75,  11516.25,  19980.00, 13140.00,  23002.50,  13132.50))
+
+    
+my_comparisons <- list(c("Alive", "Dead"),c("Alive", "Control"))
+
+p <- ggplot(df, aes(x=dose, y=len)) +
+geom_bar(stat="summary", 
+           fun=mean,
+           aes(fill=dose)) +
+  geom_point(position = position_jitter(width = 0.2), color = "black")+
+  scale_fill_manual(values = c("#00BFC4","#7CAE00", "#F8766D","#C77CFF"))+
+  stat_compare_means(comparisons = my_comparisons)+
+  labs(title="EY123 Fluor AUC",
+        x ="Condition", y = "Area Under Curve")
+p
+
+
+#ggsave("EY123 FAUC.png")
 ```
 
 ```{r }
+df <- read_excel("~/Documents/Experiments/11.4.26 EY123 mScarlet Read 2.xlsx", 
+    sheet = "Sheet1")
 newdf<- df %>%
   group_by(ID) %>%
   summarize(across(A1:G11, max)) 
@@ -130,15 +165,15 @@ result <- df %>%
   group_by(ID) %>%
   summarise(across(A1:G11,sum))
 
-newdf1<- result %>%
-  slice(seq(from = 1, to = n(), by = 2))
-newdf2 <- result %>%
-  slice(seq(from = 2, to = n(), by = 2))
+#newdf1<- result %>%
+ # slice(seq(from = 1, to = n(), by = 2))
+#newdf2 <- result %>%
+#  slice(seq(from = 2, to = n(), by = 2))
 
-#newdf1<- newdf %>%
-  #slice(seq(from = 1, to = n(), by = 2))
-#newdf2 <- newdf %>%
-  #slice(seq(from = 2, to = n(), by = 2))
+newdf1<- newdf %>%
+  slice(seq(from = 1, to = n(), by = 2))
+newdf2 <- newdf %>%
+  slice(seq(from = 2, to = n(), by = 2))
 
 min <-c(1085,1092.5,1100,1107.5,1115,1122.5,1130,1137.5,1145,1152.5,1160,1167.5,1175,1182.5,1190,1197.5,1205,1212.5,1220,1227.5,1235,1242.5,1250,1257.5,1265,1272.5,1280,1287.5,1295,1302.5,1310,1317.5,1325,1332.5,1340,1347.5,1355,1362.5,1370,1377.5,1385,1392.5,1400,1407.5,1415,1422.5)
 
@@ -151,7 +186,7 @@ jj <- cbind(newdf2,min)
 colors <- c("Alive" = "steelblue", "Control" = "black", "Dead" = "red", "Delayed Dead"="purple")
 
 p <- ggplot(ii, aes(x=min)) + 
- geom_line(aes(y = A1, color="Dead")) + 
+  geom_line(aes(y = A1, color="Dead")) + 
   geom_line(aes(y = A3, color="Alive")) + 
   geom_line(aes(y = A5, color="Delayed Dead")) + 
   geom_line(aes(y = A7, color="Delayed Dead")) + 
@@ -165,13 +200,13 @@ p <- ggplot(ii, aes(x=min)) +
   geom_line(aes(y = C11, color="Control")) + 
   geom_line(aes(y = E1, color="Delayed Dead")) + 
   geom_line(aes(y = E3, color="Alive")) +
-  geom_line(aes(y = E5, color="Delayed Dead")) + 
+  geom_line(aes(y = E5, color="Dead")) + 
   geom_line(aes(y = E7, color="Delayed Dead")) + 
   geom_line(aes(y = E9, color="Delayed Dead")) +
   geom_line(aes(y = E11, color="Control")) + 
   #geom_line(aes(y = G1, color="Dead")) + 
   geom_line(aes(y = G3, color="Delayed Dead")) + 
-  geom_line(aes(y = G5, color="Delayed Dead")) + 
+  geom_line(aes(y = G5, color="Dead")) + 
   geom_line(aes(y = G7, color="Delayed Dead")) + 
   geom_line(aes(y = G9, color="Delayed Dead")) + 
   geom_line(aes(y = G11, color="Control")) +  
@@ -202,16 +237,16 @@ p <- ggplot(jj, aes(x=min)) +
   geom_line(aes(y = C11, color="Control")) + 
   geom_line(aes(y = E1, color="Delayed Dead")) + 
   geom_line(aes(y = E3, color="Alive")) +
-  geom_line(aes(y = E5, color="Delayed Dead")) + 
+  geom_line(aes(y = E5, color="Dead")) + 
   geom_line(aes(y = E7, color="Delayed Dead")) + 
   geom_line(aes(y = E9, color="Delayed Dead")) +
   geom_line(aes(y = E11, color="Control")) + 
   #geom_line(aes(y = G1, color="Dead")) + 
   geom_line(aes(y = G3, color="Delayed Dead")) + 
-  geom_line(aes(y = G5, color="Delayed Dead")) + 
+  geom_line(aes(y = G5, color="Dead")) + 
   geom_line(aes(y = G7, color="Delayed Dead")) + 
   geom_line(aes(y = G9, color="Delayed Dead")) + 
-  geom_line(aes(y = G11, color="Control")) +  
+  geom_line(aes(y = G11, color="Control")) + 
   labs(title="EY123 Fluor 2",
         x ="Time (min)", y = "Fluorescence (AU)", color = "Legend")+
     scale_color_manual(values = colors)
@@ -221,12 +256,50 @@ p
 
 ```
 
-```{r}
-df <- read_excel("~/Documents/Experiments/11.4.26 EY123 mScarlet Read 3.xlsx", 
-    sheet = "Sheet1")
+
+```{r AUC2 }
+
+
+my_vec <- numeric()
+
+
+
+for (col in jj) {
+    a <- AUC(min, col, method = c("trapezoid"))
+    my_vec <- c(my_vec, a)
+}
+
+print(my_vec)
 ```
 
+```{r Graph2}
+df <- data.frame(dose=c("Dead","Alive", "Delayed Dead" , "Delayed Dead","Delayed Dead","Control","Delayed Dead","Alive","Alive","Dead","Delayed Dead","Control","Delayed Dead","Alive","Dead","Delayed Dead","Delayed Dead","Control","Delayed Dead","Dead","Delayed Dead","Delayed Dead","Control"),
+    len=c(11448.75,  13027.50,  39742.50,  32546.25,  26088.75,  10796.25,  40316.25, 102183.75,  84427.50, 168060.00, 21075.00,   4815.00,  25237.50, 104437.50,  22545.00,  56598.75,  25777.50,   5981.25, 11497.50,  24832.50, 12521.25,  38628.75,   5505.00))
+
+    
+my_comparisons <- list(c("Alive", "Dead"),c("Alive", "Delayed Dead"))
+
+p <- ggplot(df, aes(x=dose, y=len)) +
+geom_bar(stat="summary", 
+           fun=mean,
+           aes(fill=dose)) +
+  geom_point(position = position_jitter(width = 0.2), color = "black")+
+  scale_fill_manual(values = c("#00BFC4","#7CAE00", "#F8766D","#C77CFF"))+
+  stat_compare_means(comparisons = my_comparisons)+
+  labs(title="EY123 Fluor AUC2",
+        x ="Condition", y = "Area Under Curve")
+p
+
+
+#ggsave("EY123 FAUC2.png")
+```
+
+
 ```{r }
+
+df <- read_excel("~/Documents/Experiments/11.4.26 EY123 mScarlet Read 3.xlsx", 
+    sheet = "Sheet1")
+
 newdf<- df %>%
   group_by(ID) %>%
   summarize(across(A1:G11, max)) 
@@ -235,15 +308,15 @@ result <- df %>%
   group_by(ID) %>%
   summarise(across(A1:G11,sum))
 
-newdf1<- result %>%
-  slice(seq(from = 1, to = n(), by = 2))
-newdf2 <- result %>%
-  slice(seq(from = 2, to = n(), by = 2))
+#newdf1<- result %>%
+ #slice(seq(from = 1, to = n(), by = 2))
+#newdf2 <- result %>%
+#  slice(seq(from = 2, to = n(), by = 2))
 
-#newdf1<- newdf %>%
-  #slice(seq(from = 1, to = n(), by = 2))
-#newdf2 <- newdf %>%
-  #slice(seq(from = 2, to = n(), by = 2))
+newdf1<- newdf %>%
+  slice(seq(from = 1, to = n(), by = 2))
+newdf2 <- newdf %>%
+  slice(seq(from = 2, to = n(), by = 2))
 
 min <-c(1430,1437.5,1445,1452.5,1460,1467.5,1475,1482.5,1490,1497.5,1505,1512.5,1520,1527.5,1535,1542.5,1550,1557.5,1565,1572.5,1580,1587.5,1595,1602.5,1610,1617.5,1625,1632.5,1640,1647.5,1655,1662.5,1670,1677.5,1685,1692.5,1700,1707.5,1715,1722.5,1730,1737.5,1745,1752.5,1760,1767.5,1775,1782.5,1790,1797.5,1805,1812.5,1820,1827.5,1835,1842.5,1850,1857.5,1865,1872.5,1880,1887.5,1895,1902.5,1910,1917.5,1925,1932.5,1940,1947.5,1955,1962.5,1970,1977.5,1985,1992.5,2000,2007.5,2015,2022.5,2030,2037.5,2045,2052.5,2060,2067.5,2075,2082.5,2090,2097.5,2105,2112.5,2120,2127.5,2135,2142.5,2150,2157.5,2165,2172.5,2180,2187.5,2195,2202.5,2210,2217.5,2225,2232.5,2240,2247.5,2255,2262.5,2270,2277.5,2285,2292.5,2300,2307.5,2315,2322.5,2330,2337.5,2345)
 
@@ -326,6 +399,47 @@ p
 
 ```
 
+```{r AUC3 }
+
+
+my_vec <- numeric()
+
+
+
+for (col in jjj) {
+    a <- AUC(min, col, method = c("trapezoid"))
+    my_vec <- c(my_vec, a)
+}
+
+print(my_vec)
+```
+
+```{r Graph3}
+df <- data.frame(dose=c("Dead","Delayed Dead", "Dead" , "Dead","Dead","Control","Dead","Delayed Dead","Delayed Dead","Dead","Dead","Control","Dead","Alive","Dead","Dead","Dead","Control","Dead","Dead","Dead","Dead","Control"),
+    len=c(33663.75,   67706.25,  160053.75,  223717.50,   98910.00,   51810.00,  183221.25,  533613.75,  203542.50,
+601601.25,   87813.75,   17910.00,  159183.75,  369986.25,   66491.25,  183030.00,  108716.25,   16676.25 ,
+79263.75,   86441.25,   20186.25,   83456.25,   17021.25))
+
+    
+my_comparisons <- list(c("Alive", "Dead"),c("Alive", "Control"))
+
+p <- ggplot(df, aes(x=dose, y=len)) +
+geom_bar(stat="summary", 
+           fun=mean,
+           aes(fill=dose)) +
+  geom_point(position = position_jitter(width = 0.2), color = "black")+
+  scale_fill_manual(values = c("#00BFC4","#7CAE00", "#F8766D","#C77CFF"))+
+  stat_compare_means(comparisons = my_comparisons)+
+  labs(title="EY123 Fluor AUC3",
+        x ="Condition", y = "Area Under Curve")
+p
+
+
+#ggsave("EY123 FAUC3.png")
+```
+
+
+
 ```{r}
 sj<-rbind(j,jj,jjj)
 si<-rbind(i,ii,iii)
@@ -362,6 +476,7 @@ p <- ggplot(sj, aes(x=min)) +
   geom_vline(xintercept = 975)+
   geom_vline(xintercept = 1425)+
   geom_vline(xintercept = 2385)+
+  coord_cartesian(xlim = c(0, 757.5), ylim = c(0, 200))+
   labs(title="EY123 Fluor Combined",
         x ="Time (min)", y = "Fluorescence (AU)", color = "Legend")+
     scale_color_manual(values = colors)
@@ -374,7 +489,7 @@ sj1 <- sj %>%
   mutate(across(-min, ~ . - m))
 ```
 
-```{r}
+```{r smoothing}
 
 
 p <- ggplot(sj1, aes(x=min)) + 

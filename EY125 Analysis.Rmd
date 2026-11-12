@@ -1,0 +1,169 @@
+---
+title: "EY125 Analysis"
+author: "Emily Yang"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(ggplot2)
+library(ggpubr)
+library(DescTools)
+
+
+```
+
+```{r }
+df <- read_excel("~/Documents/Experiments/11.9.26 EY125 IMD.xlsx", 
+    sheet = "Sheet1")
+
+newdf<- df %>%
+  group_by(ID) %>%
+  summarize(across(A1:G11, max)) 
+
+min <-c(0,4.5,9,13.5,18,22.5,27,31.5,36,40.5,45,49.5,54,58.5,63,67.5,72,76.5,81,85.5,90,94.5,99,103.5,108,112.5,117,121.5,126,130.5,135,139.5,144,148.5,153,157.5,162,166.5,171,175.5,180,184.5,189,193.5,198,202.5,207,211.5,216,220.5,225,229.5,234,238.5,243,247.5,252,256.5,261,265.5,270,274.5,279,283.5,288,292.5,297,301.5,306,310.5,315,319.5,324,328.5,333,337.5,342,346.5,351,355.5,360,364.5,369,373.5,378,382.5,387,391.5,396,400.5,405,409.5,414,418.5,423,427.5,432,436.5,441,445.5,450,454.5,459,463.5,468,472.5,477,481.5,486,490.5,495,499.5,504,508.5,513,517.5,522,526.5,531,535.5,540,544.5,549,553.5,558,562.5,567,571.5,576,580.5,585,589.5,594,598.5,603,607.5,612,616.5,621,625.5,630,634.5,639,643.5,648,652.5,657,661.5,666,670.5,675,679.5,684,688.5,693,697.5,702,706.5,711,715.5,720,724.5,729,733.5,738,742.5,747,751.5,756,760.5,765,769.5,774,778.5,783,787.5,792,796.5,801,805.5,810,814.5,819,823.5,828,832.5,837,841.5,846,850.5,855,859.5,864,868.5,873,877.5,882,886.5,891,895.5,900,904.5,909,913.5,918,922.5,927,931.5,936,940.5,945,949.5)
+
+i <- cbind(newdf,min)
+
+```
+
+```{r Scarlet Lum 1}
+colors <- c("Alive" = "steelblue", "Control" = "black", "Dead" = "red", "Delayed Dead"="purple")
+
+p <- ggplot(i, aes(x=min)) + 
+  geom_line(aes(y = A1, color="Alive")) + 
+  geom_line(aes(y = A3, color="Alive")) + 
+  geom_line(aes(y = A5, color="Alive")) + 
+  geom_line(aes(y = A7, color="Alive")) + 
+  geom_line(aes(y = A9, color="Alive")) + 
+  geom_line(aes(y = A11, color="Control")) + 
+  geom_line(aes(y = C1, color="Alive")) + 
+  geom_line(aes(y = C3, color="Alive")) + 
+  geom_line(aes(y = C5, color="Alive")) + 
+  geom_line(aes(y = C7, color="Alive")) + 
+  geom_line(aes(y = C9, color="Alive")) + 
+  geom_line(aes(y = C11, color="Control")) + 
+  geom_line(aes(y = E1, color="Alive")) + 
+  geom_line(aes(y = E3, color="Alive")) +
+  geom_line(aes(y = E5, color="Alive")) + 
+  geom_line(aes(y = E7, color="Alive")) + 
+  geom_line(aes(y = E9, color="Dead")) +
+  geom_line(aes(y = E11, color="Control")) + 
+  geom_line(aes(y = G1, color="Alive")) + 
+  geom_line(aes(y = G3, color="Alive")) + 
+  geom_line(aes(y = G5, color="Alive")) + 
+  geom_line(aes(y = G7, color="Alive")) + 
+  geom_line(aes(y = G9, color="Alive")) + 
+  geom_line(aes(y = G11, color="Control")) + 
+  labs(title="EY125 Lum",
+        x ="Time (min)", y = "Luminescence (AU)", color = "Legend")+
+    scale_color_manual(values = colors)
+p
+#ggsave("EY125 Lum.png")
+
+```
+
+```{r Lum2}
+df <- read_excel("~/Documents/Experiments/11.9.26 EY125 IMD 2.xlsx", 
+    sheet = "Sheet1")
+
+newdf<- df %>%
+  group_by(ID) %>%
+  summarize(across(A1:G11, max)) 
+
+min <-c(954,958.5,963,967.5,972,976.5,981,985.5,990,994.5,999,1003.5,1008,1012.5,1017,1021.5,1026,1030.5,1035,1039.5,1044,1048.5,1053,1057.5,1062,1066.5,1071,1075.5,1080,1084.5,1089,1093.5,1098,1102.5,1107,1111.5,1116,1120.5,1125,1129.5,1134,1138.5,1143,1147.5,1152,1156.5,1161,1165.5,1170,1174.5,1179,1183.5,1188,1192.5,1197,1201.5,1206,1210.5,1215,1219.5,1224,1228.5,1233,1237.51242,1246.5,1251,1255.5,1260,1264.5,1269,1273.5,1278,1282.5,1287,1291.5,1296,1300.5,1305,1309.5,1314,1318.5,1323,1327.5,1332,1336.5,1341,1345.5,1350,1354.5,1359,1363.5,1368,1372.5,1377,1381.5,1386,1390.5,1395,1399.5,1404,1408.5,1413,1417.5,1422,1426.5,1431,1435.5,1440,1444.5,1449,1453.5,1458,1462.5,1467,1471.5,1476,1480.5,1485,1489.5,1494,1498.5,1503,1507.5,1512,1516.5,1521,1525.5,1530,1534.5,1539,1543.5,1548,1552.5,1557,1561.5,1566)
+
+i <- cbind(newdf,min)
+
+```
+
+```{r Scarlet Lum 1}
+colors <- c("Alive" = "steelblue", "Control" = "black", "Dead" = "red", "Delayed Dead"="purple")
+
+p <- ggplot(i, aes(x=min)) + 
+  geom_line(aes(y = A1, color="Alive")) + 
+  geom_line(aes(y = A3, color="Alive")) + 
+  geom_line(aes(y = A5, color="Alive")) + 
+  geom_line(aes(y = A7, color="Alive")) + 
+  geom_line(aes(y = A9, color="Alive")) + 
+  geom_line(aes(y = A11, color="Control")) + 
+  geom_line(aes(y = C1, color="Alive")) + 
+  geom_line(aes(y = C3, color="Alive")) + 
+  geom_line(aes(y = C5, color="Alive")) + 
+  geom_line(aes(y = C7, color="Alive")) + 
+  geom_line(aes(y = C9, color="Alive")) + 
+  geom_line(aes(y = C11, color="Control")) + 
+  geom_line(aes(y = E1, color="Alive")) + 
+  geom_line(aes(y = E3, color="Alive")) +
+  geom_line(aes(y = E5, color="Alive")) + 
+  geom_line(aes(y = E7, color="Alive")) + 
+  geom_line(aes(y = E9, color="Dead")) +
+  geom_line(aes(y = E11, color="Control")) + 
+  geom_line(aes(y = G1, color="Alive")) + 
+  geom_line(aes(y = G3, color="Alive")) + 
+  geom_line(aes(y = G5, color="Alive")) + 
+  geom_line(aes(y = G7, color="Alive")) + 
+  geom_line(aes(y = G9, color="Alive")) + 
+  geom_line(aes(y = G11, color="Control")) + 
+  labs(title="EY125 Lum2",
+        x ="Time (min)", y = "Luminescence (AU)", color = "Legend")+
+    scale_color_manual(values = colors)
+p
+#ggsave("EY125 Lum2.png")
+
+```
+
+```{r Lum3}
+df <- read_excel("~/Documents/Experiments/11.9.26 EY125 IMD 13.xlsx", 
+    sheet = "Sheet1")
+
+newdf<- df %>%
+  group_by(ID) %>%
+  summarize(across(A1:G11, max)) 
+
+min <-c(1570.5,1575,1579.5,1584,1588.5,1593,1597.5,1602,1606.5,1611,1615.5,1620,1624.5,1629,1633.5,1638,1642.5,1647,1651.5,1656,1660.5,1665,1669.5,1674,1678.5,1683,1687.5,1692,1696.5,1701,1705.5,1710,1714.5,1719,1723.5,1728,1732.5,1737,1741.5,1746,1750.5,1755,1759.5,1764,1768.5,1773,1777.5,1782,1786.5,1791,1795.5,1800,1804.5,1809,1813.5,1818,1822.5,1827,1831.5,1836,1840.5,1845,1849.5,1854,1858.5,1863,1867.5,1872,1876.5,1881,1885.5,1890,1894.5,1899,1903.5,1908,1912.5,1917,1921.5,1926,1930.5,1935,1939.5,1944,1948.5,1953,1957.5,1962,1966.5,1971,1975.5,1980,1984.5,1989,1993.5,1998,2002.5,2007,2011.5,2016,2020.5,2025,2029.5,2034,2038.5,2043,2047.5,2052,2056.5,2061,2065.5,2070,2074.5,2079,2083.5,2088,2092.5,2097,2101.5,2106,2110.5,2115,2119.5,2124,2128.5,2133,2137.5,2142,2146.5,2151,2155.5,2160,2164.5,2169,2173.5,2178,2182.5,2187,2191.5,2196,2200.5,2205,2209.5,2214,2218.5,2223,2227.5,2232,2236.5,2241,2245.5,2250,2254.5,2259,2263.5,2268,2272.5,2277,2281.5,2286,2290.5,2295,2299.5,2304,2308.5,2313,2317.5,2322,2326.5,2331)
+
+i <- cbind(newdf,min)
+
+```
+
+```{r Scarlet Lum 3}
+colors <- c("Alive" = "steelblue", "Control" = "black", "Dead" = "red", "Delayed Dead"="purple")
+
+p <- ggplot(i, aes(x=min)) + 
+  geom_line(aes(y = A1, color="Alive")) + 
+  geom_line(aes(y = A3, color="Alive")) + 
+  geom_line(aes(y = A5, color="Alive")) + 
+  geom_line(aes(y = A7, color="Alive")) + 
+  geom_line(aes(y = A9, color="Alive")) + 
+  geom_line(aes(y = A11, color="Control")) + 
+  geom_line(aes(y = C1, color="Alive")) + 
+  geom_line(aes(y = C3, color="Alive")) + 
+  geom_line(aes(y = C5, color="Alive")) + 
+  geom_line(aes(y = C7, color="Alive")) + 
+  geom_line(aes(y = C9, color="Alive")) + 
+  geom_line(aes(y = C11, color="Control")) + 
+  geom_line(aes(y = E1, color="Alive")) + 
+  geom_line(aes(y = E3, color="Alive")) +
+  geom_line(aes(y = E5, color="Alive")) + 
+  geom_line(aes(y = E7, color="Alive")) + 
+  geom_line(aes(y = E9, color="Dead")) +
+  geom_line(aes(y = E11, color="Control")) + 
+  geom_line(aes(y = G1, color="Alive")) + 
+  geom_line(aes(y = G3, color="Alive")) + 
+  geom_line(aes(y = G5, color="Alive")) + 
+  geom_line(aes(y = G7, color="Alive")) + 
+  geom_line(aes(y = G9, color="Alive")) + 
+  geom_line(aes(y = G11, color="Control")) + 
+  labs(title="EY125 Lum3",
+        x ="Time (min)", y = "Luminescence (AU)", color = "Legend")+
+    scale_color_manual(values = colors)
+p
+#ggsave("EY125 Lum3.png")
+
+```
